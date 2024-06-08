@@ -29,7 +29,7 @@ set autoindent			" Default to indenting files
 set backspace=indent,eol,start	" Backspace all characters
 set formatoptions-=t		" Don't add line-breaks for lines over 'textwidth' characters
 set hlsearch			" Highlight search results
-set nonumber			" Disable line numbers
+set number			" Enable line numbers
 set nostartofline		" Do not jump to first character with page commands
 set ruler			" Enable the ruler
 set showmatch			" Show matching brackets.
@@ -47,7 +47,7 @@ set background=light            " Light background is best
 " ---------------------------------------------
 " Abbreviations
 " ---------------------------------------------
-iab <expr> me:: strftime("Author: Dave Eddy <dave@daveeddy.com><cr>Date: %B %d, %Y<cr>License: MIT")
+iab <expr> me:: strftime("Author: Matt Geiman <matt@geiman.org><cr>Date: %B %d, %Y<cr>License: MIT")
 
 " ---------------------------------------------
 " Aliases
