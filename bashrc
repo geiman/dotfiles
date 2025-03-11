@@ -12,6 +12,9 @@
 # Load bics, plugins found in bics-plugins
 . ~/.bics/bics || echo '> failed to load bics' >&2
 
+# use vardump instead of parr
+alias parr='vardump'
+
 # Set environment
 export EDITOR='vim'
 export GREP_COLOR='1;36'
@@ -57,6 +60,8 @@ alias chomd='chmod'
 alias externalip='curl -sS https://www.daveeddy.com/ip'
 alias gerp='grep'
 alias hl='rg --passthru'
+alias l='ls'
+alias ll='ls -lha'
 alias suod='sudo'
 grep --color=auto < /dev/null &>/dev/null && alias grep='grep --color=auto'
 xdg-open --version &>/dev/null && alias open='xdg-open'
@@ -188,6 +193,26 @@ PROMPT_COMMAND=_prompt_command
 
 PROMPT_DIRTRIM=6
 
+# custom prompt for YSAP
+if [[ $ITERM_PROFILE == 'YSAP' ]]; then
+	# username (red for root)
+	PS1='\[${PROMPT_COLORS[0]}\]dave\[${COLOR256[256]}\]'
+
+	# @
+	PS1+='\[${PROMPT_COLORS[1]}\]\[${COLOR256[257]}\]@\[${COLOR256[256]}\]'
+
+	# hostname
+	PS1+='\[${PROMPT_COLORS[3]}\]ysap '
+
+	# cwd
+	#PS1+='\[${PROMPT_COLORS[5]}\]\w '
+
+	# prompt character
+	PS1+='\[${PROMPT_COLORS[2]}\]\$\[${COLOR256[256]}\] '
+
+	PROMPT_DIRTRIM=1
+fi
+
 # print a colorized diff
 colordiff() {
 	local red=$(tput setaf 1 2>/dev/null)
@@ -213,7 +238,7 @@ colordiff() {
 	return "${PIPESTATUS[0]}"
 }
 
-# Print all supported colors with raw ansi escape codes
+# Print all 256 colors
 colors() {
 	local i
 	for i in {0..255}; do
@@ -230,14 +255,13 @@ copy() {
 
 }
 
-# Convert epoch to human readable
+# Convert epoch to human readable (print current date if no args)
 epoch() {
-	local num=${1//[^0-9]/}
-	(( ${#num} < 13 )) && num=${num}000
-	node -pe "new Date(+process.argv[1]);" "$num"
+	local num=${1:--1}
+	printf '%(%B %d, %Y %-I:%M:%S %p %Z)T\n' "$num"
 }
 
-# open the current path or file in GitHub
+# Open the current path or file in GitHub
 gho() {
 	local file=$1
 	local remote=${2:-origin}
@@ -260,7 +284,7 @@ gho() {
 	local user=${a[len-2]}
 	local repo=${a[len-1]%.git}
 
-	local url="https://github.com/$user/$repo/tree/$branch$path"
+	url="https://github.com/$user/$repo/tree/$branch$path"
 	echo "$url"
 	open "$url"
 }
@@ -312,9 +336,25 @@ over() {
 	}'
 }
 
+# print a rainbow if truecolor is available to the terminal
+truecolor-rainbow() {
+	local i r g b
+	for ((i = 0; i < 77; i++)); do
+		r=$((255 - (i * 255 / 76)))
+		g=$((i * 510 / 76))
+		b=$((i * 255 / 76))
+		((g > 255)) && g=$((510 - g))
+		printf '\033[48;2;%d;%d;%dm ' "$r" "$g" "$b"
+	done
+	tput sgr0
+	echo
+}
+
 # Follow redirects to untiny a tiny url
 untiny() {
-	local location=$1 last_location=
+	local location=$1
+	local last_location=''
+
 	while [[ -n $location ]]; do
 		[[ -n $last_location ]] && echo " -> $last_location"
 		last_location=$location
