@@ -77,6 +77,10 @@ if has("autocmd")
 	autocmd BufNewFile,BufReadPre,FileReadPre   *.js        setlocal filetype=javascript
 	autocmd FileType                            javascript  setlocal sw=4 sts=4 et
 
+	" HTML files
+	autocmd BufNewFile,BufReadPre,FileReadPre   *.html setlocal filetype=html
+	autocmd FileType                            html   setlocal sw=4 sts=4 et
+
 	" JSON files
 	autocmd BufNewFile,BufReadPre,FileReadPre   *.json setlocal filetype=json
 	autocmd FileType                            json   setlocal sw=2 sts=2 et
